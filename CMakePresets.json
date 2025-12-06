@@ -1,0 +1,46 @@
+﻿{
+  "version": 10,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 0,
+    "patch": 0
+  },
+  
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja"
+    },
+    
+    {
+      "name": "release-build",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}/",
+      "inherits": ["base"],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug-build",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}/",
+      "inherits": ["base"],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    
+    {
+      "name": "x64-deb-win",
+      "displayName": "Debug - Windows",
+      "inherits": ["debug-build"]
+    },
+    {
+      "name": "x64-rel-win",
+      "displayName": "Release - Windows",
+      "inherits": ["release-build"]
+    }
+  ]
+}
