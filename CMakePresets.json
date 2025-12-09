@@ -10,37 +10,84 @@
     {
       "name": "base",
       "hidden": true,
-      "generator": "Ninja"
+      "binaryDir": "${sourceDir}/out/build/${presetName}/",
+      "installDir": "${sourceDir}/out/install/${presetName}"
     },
-    
     {
-      "name": "release-build",
+      "name": "ninja-multi-config",
+      "description": "Ninja Multi-Config Generator",
       "hidden": true,
-      "binaryDir": "${sourceDir}/build/${presetName}/",
-      "inherits": ["base"],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
+      "generator": "Ninja Multi-Config",
+      "inherits": ["base"]
+    },
+
+    {
+      "name": "mingw64-x64-linux",
+      "description": "MinGW64 x64 Linux Toolchain",
+      "toolchainFile": "${sourceDir}/toolchains/mingw64-x64-linux.cmake",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
       }
     },
     {
-      "name": "debug-build",
-      "hidden": true,
-      "binaryDir": "${sourceDir}/build/${presetName}/",
-      "inherits": ["base"],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+      "name": "mingw64-x32-linux",
+      "description": "MinGW64 x32 Linux Toolchain",
+      "toolchainFile": "${sourceDir}/toolchains/mingw64-x32-linux.cmake",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
       }
+    },
+    {
+      "name": "mingw64-x64-win",
+      "description": "MinGW64 x64 Windows Toolchain",
+      "toolchainFile": "${sourceDir}/toolchains/mingw64-x64-win.cmake"
+    },
+    {
+      "name": "mingw64-x32-win",
+      "description": "MinGW64 x32 Windows Toolchain",
+      "toolchainFile": "${sourceDir}/toolchains/mingw64-x32-win.cmake"
     },
     
     {
-      "name": "x64-deb-win",
+      "name": "ninja-x64-win",
+      "displayName": "Windows x64",
+      "inherits": ["ninja-multi-config", "mingw64-x64-win"]
+    },
+    {
+      "name": "ninja-x32-win",
+      "displayName": "Windows x32",
+      "inherits": ["ninja-multi-config", "mingw64-x32-win"]
+    }
+  ],
+  
+  "buildPresets": [
+    {
+      "name": "ninja-x64-win-debug",
       "displayName": "Debug - Windows",
-      "inherits": ["debug-build"]
+      "configurePreset": "ninja-x64-win",
+      "configuration": "Debug"
     },
     {
-      "name": "x64-rel-win",
+      "name": "ninja-x64-win-release",
       "displayName": "Release - Windows",
-      "inherits": ["release-build"]
+      "configurePreset": "ninja-x64-win",
+      "configuration": "Release"
+    },
+    {
+      "name": "ninja-x32-win-debug",
+      "displayName": "Debug - Windows",
+      "configurePreset": "ninja-x32-win",
+      "configuration": "Debug"
+    },
+    {
+      "name": "ninja-x32-win-release",
+      "displayName": "Release - Windows",
+      "configurePreset": "ninja-x32-win",
+      "configuration": "Release"
     }
   ]
 }
