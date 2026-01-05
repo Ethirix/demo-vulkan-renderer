@@ -44,5 +44,5 @@
 .idea/
 
 # CMake
-build/
 CMakeUserPresets.json
+out/
