@@ -19,6 +19,19 @@ namespace maths
         }
     }
 
+    template <typename Type, std::size_t Rows, std::size_t Columns> 
+        requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
+    constexpr matrix<Type, Rows, Columns>::matrix(const matrix& matrix)
+    {
+        for (std::size_t row = 0; row < Rows; row++)
+        {
+            for (std::size_t column = 0; column < Columns; column++)
+            {
+                arr_[row][column] = matrix[row][column];
+            }
+        }
+    }
+
     template <typename Type, std::size_t Rows, std::size_t Columns> requires (std::is_arithmetic_v<Type> && Rows > 1 &&
         Columns >= 1)
     constexpr matrix<Type, Rows, Columns>::matrix(std::array<std::array<Type, Columns>, Rows> array)
@@ -54,7 +67,7 @@ namespace maths
 
     template <typename Type, std::size_t Rows, std::size_t Columns> 
         requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr std::array<Type, Columns> matrix<Type, Rows, Columns>::operator[](std::size_t index)
+    constexpr std::array<Type, Columns>& matrix<Type, Rows, Columns>::operator[](std::size_t index)
     {
         return arr_[index];
     }
@@ -68,7 +81,7 @@ namespace maths
 
     template <typename Type, std::size_t Rows, std::size_t Columns> 
         requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator+(const matrix& other)
+    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator+(const matrix& other) const
     {
         matrix m = {};
         for (std::size_t x = 0; x < Rows; x++)
@@ -84,7 +97,7 @@ namespace maths
 
     template <typename Type, std::size_t Rows, std::size_t Columns> 
         requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator-(const matrix& other)
+    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator-(const matrix& other) const
     {
         matrix m = {};
         for (std::size_t x = 0; x < Rows; x++)
@@ -97,17 +110,17 @@ namespace maths
             
         return m;
     }
-
+    
     template <typename Type, std::size_t Rows, std::size_t Columns> 
         requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator*(const matrix& other)
+    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator*(const Type& scalar) const
     {
         matrix m = {};
         for (std::size_t x = 0; x < Rows; x++)
         {
             for (std::size_t y = 0; y < Columns; y++)
             {
-                m[x][y] = arr_[x][y] * other[x][y];
+                m[x][y] = arr_[x][y] * scalar;
             }
         }
             
@@ -116,14 +129,14 @@ namespace maths
 
     template <typename Type, std::size_t Rows, std::size_t Columns> 
         requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator/(const matrix& other)
+    constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::operator/(const Type& scalar) const
     {
         matrix m = {};
         for (std::size_t x = 0; x < Rows; x++)
         {
             for (std::size_t y = 0; y < Columns; y++)
             {
-                m[x][y] = arr_[x][y] / other[x][y];
+                m[x][y] = arr_[x][y] / scalar;
             }
         }
             
@@ -160,30 +173,30 @@ namespace maths
         return *this;
     }
 
-    template <typename Type, std::size_t Rows, std::size_t Columns> 
-        requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr matrix<Type, Rows, Columns>& matrix<Type, Rows, Columns>::operator*=(const matrix& other)
+    template <typename Type, std::size_t Rows, std::size_t Columns> requires (std::is_arithmetic_v<Type> && Rows > 1 &&
+        Columns >= 1)
+    constexpr matrix<Type, Rows, Columns>& matrix<Type, Rows, Columns>::operator*=(const Type& scalar)
     {
         for (std::size_t x = 0; x < Rows; x++)
         {
             for (std::size_t y = 0; y < Columns; y++)
             {
-                arr_[x][y] *= other[x][y];
+                arr_[x][y] *= scalar;
             }
         }
             
         return *this;
     }
 
-    template <typename Type, std::size_t Rows, std::size_t Columns> 
-        requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
-    constexpr matrix<Type, Rows, Columns>& matrix<Type, Rows, Columns>::operator/=(const matrix& other)
+    template <typename Type, std::size_t Rows, std::size_t Columns> requires (std::is_arithmetic_v<Type> && Rows > 1 &&
+        Columns >= 1)
+    constexpr matrix<Type, Rows, Columns>& matrix<Type, Rows, Columns>::operator/=(const Type& scalar)
     {
         for (std::size_t x = 0; x < Rows; x++)
         {
             for (std::size_t y = 0; y < Columns; y++)
             {
-                arr_[x][y] /= other[x][y];
+                arr_[x][y] /= scalar;
             }
         }
             
@@ -239,7 +252,7 @@ namespace maths
         Type det = 0;
         for (std::size_t column = 0; column < Columns; column++)
         {
-            std::array<std::array<Type, Columns - 1>, Rows - 1> minor = get_minor(column);
+            std::array<std::array<Type, Columns - 1>, Rows - 1> minor = get_minor(0, column);
             
             Type minorDet = 0;
             if constexpr (Rows > 3 && Columns > 3)
@@ -258,31 +271,71 @@ namespace maths
         return det;
     }
 
-    template <typename Type, std::size_t Rows, std::size_t Columns> requires (std::is_arithmetic_v<Type> && Rows > 1 &&
-        Columns >= 1)
+    template <typename Type, std::size_t Rows, std::size_t Columns> 
+        requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
     constexpr matrix<Type, Rows, Columns> matrix<Type, Rows, Columns>::inverse() const
     {
+        if constexpr (Rows != Columns)
+        {
+            return {};
+        }
+        
         Type det = determinant();
         if (det == 0)
+        {
             return {};
+        }
         
         //https://semath.info/src/inverse-cofactor-ex4.html
+        Type inverse = static_cast<Type>(1.0) / det;
+        if constexpr (Rows == 2 && Columns == 2)
+        {
+            return maths::matrix{{
+                {arr_[1][1] * inverse, -arr_[0][1] * inverse},
+                {-arr_[1][0] * inverse, arr_[0][0] * inverse}
+            }};
+        }
         
-        return {};
+        // Suspiciously close to Determinant code - very boilerplate-y
+        // TODO: Move Laplace expansion to own function
+        matrix m = {};
+        for (std::size_t row = 0; row < Rows; row++)
+        {
+            for (std::size_t column = 0; column < Columns; column++)
+            {
+                std::array<std::array<Type, Columns - 1>, Rows - 1> minor = get_minor(row, column);
+                Type minorDet = 0;
+                if constexpr (Rows > 3 && Columns > 3)
+                {
+                    minorDet = static_cast<matrix<Type, Rows - 1, Columns - 1>>(minor).determinant();
+                }
+                else
+                {
+                    minorDet = minor[0][0] * minor[1][1] - minor[1][0] * minor[0][1];
+                }
+                
+                int sign = (row + column) % 2 == 0 ? 1 : -1;
+                m[column][row] = minorDet * sign; // row-column assignment inversion
+            }
+        }
+        
+        
+        return m * inverse;
     }
 
     template <typename Type, std::size_t Rows, std::size_t Columns> 
         requires (std::is_arithmetic_v<Type> && Rows > 1 && Columns >= 1)
     constexpr std::array<std::array<Type, Columns - 1>, Rows - 1> 
-        matrix<Type, Rows, Columns>::get_minor(const std::size_t x) const
+        matrix<Type, Rows, Columns>::get_minor(const std::size_t r, const std::size_t c) const
     {
         std::array<std::array<Type, Columns - 1>, Rows - 1> out;
-        for (std::size_t row = 1; row < Rows; row++)
+        for (std::size_t row = 0; row < Rows - 1; row++)
         {
             for (std::size_t column = 0; column < Columns - 1; column++)
             {
-                const bool offset = column >= x;
-                out[row - 1][column] = arr_[row][column + offset];
+                const bool offsetRow = row >= r;
+                const bool offsetColumn = column >= c;
+                out[row][column] = arr_[row + offsetRow][column + offsetColumn];
             }
         }
         
