@@ -1,0 +1,77 @@
+﻿# This starter workflow is for a CMake project running on multiple platforms. 
+# There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: CMake on Multiple Platforms
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        build-tool: [ ninja ]
+        compiler: [ mingw64, gcc ]
+        architecture: [ x64, x32 ]
+        os: [ ubuntu-latest, windows-latest ]
+        build-type: [ debug, release ]
+        exclude:
+          - os: windows-latest
+            compiler: gcc
+          - os: ubuntu-latest
+            compiler: mingw64
+    
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Initialise Variables
+        shell: bash
+        run: >
+          echo "current-build-tool=${{ matrix.build-tool }}" >> $GITHUB_ENV
+          echo "current-compiler=${{ matrix.current-compiler }}" >> $GITHUB_ENV
+          echo "current-architecture=${{ matrix.current-architecture }}" >> $GITHUB_ENV
+          if [ ${{ matrix.os }} == "ubuntu-latest ]; then
+            echo "current-os=linux" >> $GITHUB_ENV
+          else
+            echo "current-os=win" >> $GITHUB_ENV
+          fi
+          echo "current-build-type=${{ matrix.build-type }}" >> $GITHUB_ENV
+          
+
+      - name: Initialise MinGW64 and Ninja
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: >
+          choco install mingw
+          choco install ninja
+
+      - name: Configure CMake
+        shell: bash
+        # Configure CMake in a 'build' subdirectory. 
+        # `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run:
+          cmake -S ${{ github.workspace }}
+          --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}-${{ env.current-build-type }}
+
+      - name: Build
+        # Build your program with the given configuration. 
+        # Note that --config is needed because the default Windows generator is a multi-config generator 
+        # (Visual Studio generator).
+        run: cmake --build 
+          --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}-${{ env.current-build-type }}
+
+#      - name: Test
+#        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+#        # Execute tests defined by the CMake configuration. 
+#        # Note that --build-config is needed because the default Windows generator is a multi-config generator
+#        # (Visual Studio generator).
+#        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+#        run: ctest --build-config ${{ matrix.build_type }}
