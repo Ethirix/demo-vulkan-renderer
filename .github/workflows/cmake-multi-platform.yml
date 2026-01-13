@@ -67,7 +67,7 @@ jobs:
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run:
           cmake -S "${{ github.workspace }}"
-          --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}-${{ env.current-build-type }}
+          --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}
 
       - name: Build
         # Build your program with the given configuration. 
