@@ -35,8 +35,8 @@ jobs:
         shell: bash
         run: |
           echo "current-build-tool=${{ matrix.build-tool }}" >> $GITHUB_ENV
-          echo "current-compiler=${{ matrix.current-compiler }}" >> $GITHUB_ENV
-          echo "current-architecture=${{ matrix.current-architecture }}" >> $GITHUB_ENV
+          echo "current-compiler=${{ matrix.compiler }}" >> $GITHUB_ENV
+          echo "current-architecture=${{ matrix.architecture }}" >> $GITHUB_ENV
           if [ ${{ matrix.os }} == "ubuntu-latest" ]; then
             echo "current-os=linux" >> $GITHUB_ENV
           else
@@ -51,6 +51,13 @@ jobs:
         run: |
           choco install mingw
           choco install ninja
+          
+      - name: Upgrade CMake
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install cmake
 
       - name: Configure CMake
         shell: bash
