@@ -33,7 +33,7 @@ jobs:
         
       - name: Initialise Variables
         shell: bash
-        run: >
+        run: |
           echo "current-build-tool=${{ matrix.build-tool }}" >> $GITHUB_ENV
           echo "current-compiler=${{ matrix.current-compiler }}" >> $GITHUB_ENV
           echo "current-architecture=${{ matrix.current-architecture }}" >> $GITHUB_ENV
@@ -48,7 +48,7 @@ jobs:
       - name: Initialise MinGW64 and Ninja
         if: runner.os == 'Windows'
         shell: pwsh
-        run: >
+        run: |
           choco install mingw
           choco install ninja
 
