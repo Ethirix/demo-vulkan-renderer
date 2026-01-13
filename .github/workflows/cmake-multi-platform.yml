@@ -49,8 +49,15 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          choco install mingw
-          choco install mingw --x86
+          if ("${{ matrix.architecture }}" -eq "x64")
+          {
+            choco install mingw
+          }
+          else
+          {
+            choco install mingw --x86
+            i686-w64-mingw32-g++ --version
+          }
           choco install ninja
           choco upgrade cmake
           
