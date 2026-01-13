@@ -19,7 +19,7 @@ jobs:
       matrix:
         build-tool: [ ninja ]
         compiler: [ mingw64, gcc ]
-        architecture: [ x64, x32 ]
+        architecture: [ x64, x86 ]
         os: [ ubuntu-latest, windows-latest ]
         build-type: [ debug, release ]
         exclude:
@@ -50,6 +50,7 @@ jobs:
         shell: pwsh
         run: |
           choco install mingw
+          choco install mingw --x86
           choco install ninja
           choco upgrade cmake
           
