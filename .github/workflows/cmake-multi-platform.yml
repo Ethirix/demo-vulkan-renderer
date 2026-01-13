@@ -56,8 +56,8 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install cmake
+          sudo apt remove cmake -y
+          sudo pip install cmake --upgrade
 
       - name: Configure CMake
         shell: bash
