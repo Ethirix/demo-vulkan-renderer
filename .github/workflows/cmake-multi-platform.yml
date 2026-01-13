@@ -45,14 +45,15 @@ jobs:
           echo "current-build-type=${{ matrix.build-type }}" >> $GITHUB_ENV
           
 
-      - name: Initialise MinGW64 and Ninja
+      - name: Initialise Windows Runner
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           choco install mingw
           choco install ninja
+          choco upgrade cmake
           
-      - name: Upgrade CMake
+      - name: Initialise Linux Runner
         if: runner.os == 'Linux'
         shell: bash
         run: |
