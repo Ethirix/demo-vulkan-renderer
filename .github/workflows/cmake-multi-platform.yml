@@ -46,7 +46,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          if [[ "${{ matrix.architecture}}" == "x64" ]]; then
+          if [[ "${{ matrix.architecture }}" == "x64" ]]; then
             choco install mingw --no-progress
             echo "C:\ProgramData\mingw64\mingw64\bin" >> $GITHUB_PATH
           else
@@ -63,6 +63,7 @@ jobs:
         run: |
           sudo apt remove cmake -y
           sudo pip install cmake --upgrade
+          sudo apt install gcc-multilib
 
       - name: Configure CMake
         shell: bash
