@@ -56,10 +56,11 @@ jobs:
           else
           {
             choco install mingw --x86
-            i686-w64-mingw32-g++ --version
           }
           choco install ninja
           choco upgrade cmake
+          
+          echo (Split-Path(Get-Command i686-w64-mingw32-g++).Source) >> $GITHUB_PATH
           
       - name: Initialise Linux Runner
         if: runner.os == 'Linux'
