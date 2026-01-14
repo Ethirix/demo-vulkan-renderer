@@ -1,4 +1,4 @@
-﻿name: CMake on Multiple Platforms
+﻿name: Build for Multiple Platforms
 
 on:
   push:
