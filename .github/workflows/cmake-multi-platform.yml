@@ -51,16 +51,16 @@ jobs:
         run: |
           if ("${{ matrix.architecture }}" -eq "x64")
           {
-            choco install mingw
+            choco install mingw --no-progress
           }
           else
           {
-            choco install mingw --x86
+            choco install mingw --x86 --no-progress
+            Update-SessionEnvironment
+            echo (Split-Path(Get-Command i686-w64-mingw32-g++).Source) >> $GITHUB_PATH
           }
-          choco install ninja
-          choco upgrade cmake
-          
-          echo (Split-Path(Get-Command i686-w64-mingw32-g++).Source) >> $GITHUB_PATH
+          choco install ninja --no-progress
+          choco install cmake --no-progress
           
       - name: Initialise Linux Runner
         if: runner.os == 'Linux'
