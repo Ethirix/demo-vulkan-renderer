@@ -1,7 +1,4 @@
-﻿# This starter workflow is for a CMake project running on multiple platforms. 
-# There is a different starter workflow if you just want a single platform.
-# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: CMake on Multiple Platforms
+﻿name: CMake on Multiple Platforms
 
 on:
   push:
@@ -47,20 +44,33 @@ jobs:
 
       - name: Initialise Windows Runner
         if: runner.os == 'Windows'
-        shell: pwsh
+        shell: bash
         run: |
-          if ("${{ matrix.architecture }}" -eq "x64")
-          {
+          if [[ "${{ matrix.architecture}}" == "x64" ]]; then
             choco install mingw --no-progress
-          }
+            echo "C:\ProgramData\mingw64\mingw64\bin" >> $GITHUB_PATH
           else
-          {
             choco install mingw --x86 --no-progress
-            echo $env:path
-            # echo (Split-Path(Get-Command i686-w64-mingw32-g++).Source) >> $GITHUB_PATH
-          }
+            echo "C:\ProgramData\mingw64\mingw32\bin" >> $GITHUB_PATH
+          fi
+          
           choco install ninja --no-progress
           choco install cmake --no-progress
+          
+          #if ("${{ matrix.architecture }}" -eq "x64")
+          #{
+          #  choco install mingw --no-progress
+          #  # echo "%ProgramData%\mingw64\mingw64\bin" >> $GITHUB_PATH
+          #  Add-Content $env:GITHUB_PATH" %ProgramData%\mingw64\mingw64\bin"
+          #}
+          #else
+          #{
+          #  choco install mingw --x86 --no-progress
+          #  # echo "%ProgramData%\mingw64\mingw32\bin" >> $GITHUB_PATH
+          #  Add-Content $env:GITHUB_PATH" %ProgramData%\mingw64\mingw32\bin"
+          #}
+          #choco install ninja --no-progress
+          #choco install cmake --no-progress
           
       - name: Initialise Linux Runner
         if: runner.os == 'Linux'
@@ -71,18 +81,13 @@ jobs:
 
       - name: Configure CMake
         shell: bash
-        # Configure CMake in a 'build' subdirectory. 
-        # `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run:
-          cmake -S "${{ github.workspace }}"
-          --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}
+        run: |
+          cat $GITHUB_PATH
+          cmake -S "${{ github.workspace }}" --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}
 
       - name: Build
-        # Build your program with the given configuration. 
-        # Note that --config is needed because the default Windows generator is a multi-config generator 
-        # (Visual Studio generator).
-        run: cmake --build 
+        run: 
+          cmake --build 
           --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}-${{ env.current-build-type }}
 
 #      - name: Test
