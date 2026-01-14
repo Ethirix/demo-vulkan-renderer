@@ -56,8 +56,8 @@ jobs:
           else
           {
             choco install mingw --x86 --no-progress
-            Update-SessionEnvironment
-            echo (Split-Path(Get-Command i686-w64-mingw32-g++).Source) >> $GITHUB_PATH
+            echo $env:path
+            # echo (Split-Path(Get-Command i686-w64-mingw32-g++).Source) >> $GITHUB_PATH
           }
           choco install ninja --no-progress
           choco install cmake --no-progress
