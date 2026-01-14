@@ -57,21 +57,6 @@ jobs:
           choco install ninja --no-progress
           choco install cmake --no-progress
           
-          #if ("${{ matrix.architecture }}" -eq "x64")
-          #{
-          #  choco install mingw --no-progress
-          #  # echo "%ProgramData%\mingw64\mingw64\bin" >> $GITHUB_PATH
-          #  Add-Content $env:GITHUB_PATH" %ProgramData%\mingw64\mingw64\bin"
-          #}
-          #else
-          #{
-          #  choco install mingw --x86 --no-progress
-          #  # echo "%ProgramData%\mingw64\mingw32\bin" >> $GITHUB_PATH
-          #  Add-Content $env:GITHUB_PATH" %ProgramData%\mingw64\mingw32\bin"
-          #}
-          #choco install ninja --no-progress
-          #choco install cmake --no-progress
-          
       - name: Initialise Linux Runner
         if: runner.os == 'Linux'
         shell: bash
@@ -81,9 +66,9 @@ jobs:
 
       - name: Configure CMake
         shell: bash
-        run: |
-          cat $GITHUB_PATH
-          cmake -S "${{ github.workspace }}" --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}
+        run: 
+          cmake -S "${{ github.workspace }}" 
+          --preset ${{ env.current-build-tool }}-${{ env.current-compiler }}-${{ env.current-architecture }}-${{ env.current-os }}
 
       - name: Build
         run: 
