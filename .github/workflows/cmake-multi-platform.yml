@@ -1,5 +1,7 @@
 ﻿name: Build for Multiple Platforms
-
+permissions: 
+  contents: read
+  
 on:
   push:
     branches: [ "master" ]
