@@ -1,10 +1,12 @@
-﻿name: Build for Multiple Platforms
+﻿name: Cross-compilation Builds
 permissions: 
   contents: read
   
 on:
   push:
     branches: [ "master" ]
+    tags:
+      - "**"
   pull_request:
     branches: [ "master" ]
 
@@ -13,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: false
+      fail-fast: true
 
       matrix:
         build-tool: [ ninja ]
