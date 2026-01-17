@@ -1,8 +1,8 @@
 ﻿{
   "version": 10,
   "cmakeMinimumRequired": {
-    "major": 4,
-    "minor": 0,
+    "major": 3,
+    "minor": 24,
     "patch": 0
   },
   
@@ -11,7 +11,7 @@
       "name": "base",
       "hidden": true,
       "binaryDir": "${sourceDir}/build/${presetName}/",
-      "installDir": "${sourceDir}/install/${presetName}"
+      "installDir": "${sourceDir}/install/${presetName}/${sourceDirName}"
     },
     {
       "name": "ninja-multi-config",
